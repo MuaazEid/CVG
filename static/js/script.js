@@ -1,12 +1,6 @@
 // Resume Generator JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize form validation
-    initializeFormValidation();
-    
-    // Initialize loading states
-    initializeLoadingStates();
-    
     // Initialize tooltips and other Bootstrap components
     initializeBootstrapComponents();
     
@@ -35,19 +29,8 @@ function initializeFormValidation() {
         });
     });
     
-    // Simple form submission - no interference
-    form.addEventListener('submit', function(e) {
-        console.log('Form submission started');
-        
-        // Just show loading state without disabling anything
-        const submitBtn = document.getElementById('submitBtn');
-        if (submitBtn) {
-            submitBtn.innerHTML = '<i class="fas fa-cog fa-spin me-2"></i>Generating Resume...';
-        }
-        
-        // Let the form submit naturally - no validation interference
-        console.log('Form submitting normally...');
-    });
+    // Remove ALL form event listeners - let HTML form work naturally
+    console.log('Form found, but letting it submit naturally without JS interference');
 }
 
 /**
@@ -396,21 +379,9 @@ function initializeKeyboardShortcuts() {
     });
 }
 
-// Initialize additional features
+// Minimal initialization - no form interference  
 document.addEventListener('DOMContentLoaded', function() {
-    initializeAutoSave();
-    initializeKeyboardShortcuts();
-    
-    // Add debugging for form elements
-    const form = document.getElementById('resumeForm');
-    if (form) {
-        console.log('Form found:', form);
-        const textareas = form.querySelectorAll('textarea');
-        console.log('Textareas found:', textareas.length);
-        textareas.forEach((ta, index) => {
-            console.log(`Textarea ${index}:`, ta.name, ta.id);
-        });
-    }
+    console.log('Basic Resume Generator loaded - form will work naturally');
 });
 
 /**
