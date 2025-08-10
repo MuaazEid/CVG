@@ -3,6 +3,7 @@ import logging
 from flask import Flask, render_template, request, redirect, url_for, flash
 from forms import ResumeForm
 from nlp_processor import NLPProcessor
+import re
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -14,17 +15,35 @@ app.secret_key = os.environ.get("SESSION_SECRET", "fallback-secret-key-for-devel
 # Initialize NLP processor
 nlp_processor = NLPProcessor()
 
+# Custom template filter for newline to <br> conversion
+@app.template_filter('nl2br')
+def nl2br_filter(text):
+    """Convert newlines to HTML line breaks"""
+    if text is None:
+        return ''
+    # Replace newlines with <br> tags
+    return re.sub(r'\n', '<br>', str(text))
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = ResumeForm()
     
+    if request.method == 'POST':
+        logging.debug(f"Form data received: {request.form}")
+        logging.debug(f"Form errors: {form.errors}")
+        logging.debug(f"Form validation result: {form.validate_on_submit()}")
+    
     if form.validate_on_submit():
         try:
+            logging.info("Form validation successful, processing resume data...")
+            
             # Process form data
             job_titles = form.job_titles.data
             projects = form.projects.data
             skills = form.skills.data
             education = form.education.data
+            
+            logging.debug(f"Processing data - Job titles: {len(job_titles)} chars, Projects: {len(projects)} chars, Skills: {len(skills)} chars, Education: {len(education)} chars")
             
             # Extract skills using NLP
             extracted_skills = nlp_processor.extract_skills(
@@ -46,12 +65,19 @@ def index():
                 'suggestions': suggestions
             }
             
+            logging.info(f"Resume generated successfully with {len(extracted_skills['technical'])} technical skills and {len(extracted_skills['soft'])} soft skills")
             return render_template('resume.html', data=resume_data)
             
         except Exception as e:
             logging.error(f"Error processing resume data: {str(e)}")
             flash('An error occurred while processing your resume. Please try again.', 'error')
             return redirect(url_for('index'))
+    elif request.method == 'POST':
+        # Form validation failed
+        logging.warning(f"Form validation failed with errors: {form.errors}")
+        for field_name, errors in form.errors.items():
+            for error in errors:
+                flash(f"{field_name}: {error}", 'error')
     
     return render_template('index.html', form=form)
 
