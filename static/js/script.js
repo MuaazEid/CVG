@@ -37,10 +37,15 @@ function initializeFormValidation() {
     
     // Form submit validation
     form.addEventListener('submit', function(e) {
+        console.log('Form submission started');
+        console.log('Form data:', new FormData(form));
+        
         if (!validateForm()) {
+            console.log('Form validation failed');
             e.preventDefault();
             showValidationErrors();
         } else {
+            console.log('Form validation passed, showing loading state');
             showLoadingState();
         }
     });
@@ -337,24 +342,33 @@ function initializeAutoSave() {
     
     const textAreas = form.querySelectorAll('textarea');
     
-    // Load saved data
+    // Load saved data and notify user
+    let hasRestoredData = false;
     textAreas.forEach(textarea => {
         const savedValue = localStorage.getItem(`resume_${textarea.name}`);
         if (savedValue) {
             textarea.value = savedValue;
+            hasRestoredData = true;
+            console.log(`Restored data for ${textarea.name}:`, savedValue.substring(0, 100) + '...');
         }
     });
+    
+    if (hasRestoredData) {
+        showAlert('Your previous form data has been restored from local storage.', 'info');
+    }
     
     // Save data on input
     textAreas.forEach(textarea => {
         textarea.addEventListener('input', function() {
             localStorage.setItem(`resume_${this.name}`, this.value);
+            console.log(`Saved ${this.name} to localStorage`);
         });
     });
     
     // Clear saved data on successful submission
     form.addEventListener('submit', function() {
         if (validateForm()) {
+            console.log('Clearing localStorage on successful submission');
             textAreas.forEach(textarea => {
                 localStorage.removeItem(`resume_${textarea.name}`);
             });
@@ -390,7 +404,58 @@ function initializeKeyboardShortcuts() {
 document.addEventListener('DOMContentLoaded', function() {
     initializeAutoSave();
     initializeKeyboardShortcuts();
+    
+    // Add debugging for form elements
+    const form = document.getElementById('resumeForm');
+    if (form) {
+        console.log('Form found:', form);
+        const textareas = form.querySelectorAll('textarea');
+        console.log('Textareas found:', textareas.length);
+        textareas.forEach((ta, index) => {
+            console.log(`Textarea ${index}:`, ta.name, ta.id);
+        });
+    }
 });
+
+/**
+ * Show stored data for debugging
+ */
+function showStoredData() {
+    const fieldNames = ['job_titles', 'projects', 'skills', 'education'];
+    let storedData = [];
+    
+    fieldNames.forEach(fieldName => {
+        const savedValue = localStorage.getItem(`resume_${fieldName}`);
+        if (savedValue) {
+            storedData.push(`${fieldName}: ${savedValue.substring(0, 100)}${savedValue.length > 100 ? '...' : ''}`);
+        }
+    });
+    
+    if (storedData.length > 0) {
+        alert('Stored data found:\n\n' + storedData.join('\n\n'));
+    } else {
+        alert('No stored data found in local storage.');
+    }
+}
+
+/**
+ * Clear all stored data
+ */
+function clearStoredData() {
+    if (confirm('Are you sure you want to clear all saved form data?')) {
+        const fieldNames = ['job_titles', 'projects', 'skills', 'education'];
+        fieldNames.forEach(fieldName => {
+            localStorage.removeItem(`resume_${fieldName}`);
+        });
+        showAlert('All saved data has been cleared.', 'info');
+        
+        // Clear form fields
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            textarea.value = '';
+        });
+    }
+}
 
 // Export functions for testing
 if (typeof module !== 'undefined' && module.exports) {
@@ -398,6 +463,8 @@ if (typeof module !== 'undefined' && module.exports) {
         validateField,
         validateForm,
         getMinLength,
-        getMaxLength
+        getMaxLength,
+        showStoredData,
+        clearStoredData
     };
 }

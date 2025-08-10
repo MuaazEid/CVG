@@ -119,6 +119,16 @@
                                     </small>
                                 </div>
 
+                                <!-- Data Recovery Button -->
+                                <div class="text-center mb-3">
+                                    <button type="button" class="btn btn-outline-info btn-sm" onclick="showStoredData()">
+                                        <i class="fas fa-history me-1"></i>Check Saved Data
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning btn-sm ms-2" onclick="clearStoredData()">
+                                        <i class="fas fa-trash me-1"></i>Clear Saved Data
+                                    </button>
+                                </div>
+
                                 <!-- Submit Button -->
                                 <div class="text-center">
                                     {{ form.submit(class="btn btn-primary btn-lg px-5", id="submitBtn") }}
