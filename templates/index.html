@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}AI Resume Generator - Create Professional Resumes{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <h1 class="display-4 fw-bold text-primary mb-4">
+                        Create Your Perfect Resume with AI
+                    </h1>
+                    <p class="lead text-muted mb-4">
+                        Our intelligent resume generator uses Natural Language Processing to extract skills 
+                        from your experience and creates a professional, optimized resume in seconds.
+                    </p>
+                    <div class="features mb-4">
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-brain text-success me-2"></i>
+                            <span>AI-powered skill extraction</span>
+                        </div>
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-search text-success me-2"></i>
+                            <span>Keyword optimization suggestions</span>
+                        </div>
+                        <div class="feature-item mb-2">
+                            <i class="fas fa-print text-success me-2"></i>
+                            <span>Professional, printable format</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-container">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="card-title mb-0">
+                                <i class="fas fa-edit me-2"></i>Tell Us About Yourself
+                            </h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <form method="POST" id="resumeForm" novalidate>
+                                {{ form.hidden_tag() }}
+                                
+                                <!-- Job Titles & Experience -->
+                                <div class="mb-4">
+                                    <label for="{{ form.job_titles.id }}" class="form-label fw-semibold">
+                                        <i class="fas fa-briefcase text-primary me-2"></i>
+                                        {{ form.job_titles.label.text }}
+                                    </label>
+                                    {{ form.job_titles(class="form-control") }}
+                                    {% if form.job_titles.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.job_titles.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">
+                                        Include job titles, company names, dates, and key responsibilities.
+                                    </small>
+                                </div>
+
+                                <!-- Projects -->
+                                <div class="mb-4">
+                                    <label for="{{ form.projects.id }}" class="form-label fw-semibold">
+                                        <i class="fas fa-project-diagram text-primary me-2"></i>
+                                        {{ form.projects.label.text }}
+                                    </label>
+                                    {{ form.projects(class="form-control") }}
+                                    {% if form.projects.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.projects.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">
+                                        Describe your key projects, technologies used, and outcomes achieved.
+                                    </small>
+                                </div>
+
+                                <!-- Skills -->
+                                <div class="mb-4">
+                                    <label for="{{ form.skills.id }}" class="form-label fw-semibold">
+                                        <i class="fas fa-cogs text-primary me-2"></i>
+                                        {{ form.skills.label.text }}
+                                    </label>
+                                    {{ form.skills(class="form-control") }}
+                                    {% if form.skills.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.skills.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">
+                                        List your technical skills, programming languages, frameworks, and tools.
+                                    </small>
+                                </div>
+
+                                <!-- Education -->
+                                <div class="mb-4">
+                                    <label for="{{ form.education.id }}" class="form-label fw-semibold">
+                                        <i class="fas fa-graduation-cap text-primary me-2"></i>
+                                        {{ form.education.label.text }}
+                                    </label>
+                                    {{ form.education(class="form-control") }}
+                                    {% if form.education.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.education.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">
+                                        Include degrees, institutions, graduation dates, and relevant coursework.
+                                    </small>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="text-center">
+                                    {{ form.submit(class="btn btn-primary btn-lg px-5", id="submitBtn") }}
+                                    <div class="spinner-border spinner-border-sm ms-2 d-none" role="status" id="loadingSpinner">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Process Steps Section -->
+<div class="process-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <div class="process-step">
+                    <div class="step-icon mb-3">
+                        <i class="fas fa-edit fa-3x text-primary"></i>
+                    </div>
+                    <h4>1. Fill the Form</h4>
+                    <p class="text-muted">Provide your job experience, projects, skills, and education details.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="process-step">
+                    <div class="step-icon mb-3">
+                        <i class="fas fa-brain fa-3x text-success"></i>
+                    </div>
+                    <h4>2. AI Processing</h4>
+                    <p class="text-muted">Our NLP engine extracts skills and analyzes your content for optimization.</p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="process-step">
+                    <div class="step-icon mb-3">
+                        <i class="fas fa-file-download fa-3x text-info"></i>
+                    </div>
+                    <h4>3. Get Your Resume</h4>
+                    <p class="text-muted">Download your professional resume with personalized optimization tips.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Your Generated Resume{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Resume Preview -->
+        <div class="col-lg-8">
+            <div class="resume-container" id="resumeContent">
+                <div class="resume-paper">
+                    <!-- Resume Header -->
+                    <div class="resume-header text-center mb-4">
+                        <h1 class="display-6 fw-bold text-primary mb-2">Professional Resume</h1>
+                        <p class="text-muted">Generated with AI-powered skill extraction</p>
+                    </div>
+
+                    <!-- Professional Experience -->
+                    <section class="resume-section mb-4">
+                        <h2 class="section-title">
+                            <i class="fas fa-briefcase me-2"></i>Professional Experience
+                        </h2>
+                        <div class="section-content">
+                            {{ data.job_titles | nl2br | safe }}
+                        </div>
+                    </section>
+
+                    <!-- Projects -->
+                    <section class="resume-section mb-4">
+                        <h2 class="section-title">
+                            <i class="fas fa-project-diagram me-2"></i>Projects
+                        </h2>
+                        <div class="section-content">
+                            {{ data.projects | nl2br | safe }}
+                        </div>
+                    </section>
+
+                    <!-- Skills -->
+                    <section class="resume-section mb-4">
+                        <h2 class="section-title">
+                            <i class="fas fa-cogs me-2"></i>Skills
+                        </h2>
+                        
+                        <!-- Original Skills -->
+                        <div class="section-content mb-3">
+                            <h5 class="fw-semibold mb-2">Core Skills:</h5>
+                            {{ data.skills | nl2br | safe }}
+                        </div>
+
+                        <!-- Extracted Technical Skills -->
+                        {% if data.extracted_skills.technical %}
+                        <div class="extracted-skills mb-3">
+                            <h5 class="fw-semibold mb-2">
+                                <i class="fas fa-robot me-1 text-success"></i>AI-Extracted Technical Skills:
+                            </h5>
+                            <div class="skills-tags">
+                                {% for skill in data.extracted_skills.technical %}
+                                    <span class="badge bg-primary me-2 mb-2">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Extracted Soft Skills -->
+                        {% if data.extracted_skills.soft %}
+                        <div class="extracted-skills">
+                            <h5 class="fw-semibold mb-2">
+                                <i class="fas fa-robot me-1 text-info"></i>AI-Extracted Soft Skills:
+                            </h5>
+                            <div class="skills-tags">
+                                {% for skill in data.extracted_skills.soft %}
+                                    <span class="badge bg-info me-2 mb-2">{{ skill }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </section>
+
+                    <!-- Education -->
+                    <section class="resume-section mb-4">
+                        <h2 class="section-title">
+                            <i class="fas fa-graduation-cap me-2"></i>Education
+                        </h2>
+                        <div class="section-content">
+                            {{ data.education | nl2br | safe }}
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optimization Panel -->
+        <div class="col-lg-4">
+            <div class="optimization-panel">
+                <!-- Action Buttons -->
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-download me-2"></i>Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-success btn-block w-100 mb-2" onclick="window.print()">
+                            <i class="fas fa-print me-2"></i>Print Resume
+                        </button>
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-edit me-2"></i>Create New Resume
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Skill Analysis -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>Skill Analysis
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="skill-stats mb-3">
+                            <div class="stat-item d-flex justify-content-between">
+                                <span>Technical Skills:</span>
+                                <span class="fw-bold text-primary">{{ data.extracted_skills.technical | length }}</span>
+                            </div>
+                            <div class="stat-item d-flex justify-content-between">
+                                <span>Soft Skills:</span>
+                                <span class="fw-bold text-info">{{ data.extracted_skills.soft | length }}</span>
+                            </div>
+                        </div>
+                        
+                        {% if data.extracted_skills.technical | length > 10 %}
+                            <div class="alert alert-success" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Excellent technical skill diversity!
+                            </div>
+                        {% elif data.extracted_skills.technical | length > 5 %}
+                            <div class="alert alert-warning" role="alert">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Good skill range. Consider adding more if relevant.
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info" role="alert">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Consider expanding your technical skills list.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Optimization Suggestions -->
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>Optimization Suggestions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if data.suggestions %}
+                            <ul class="list-unstyled mb-0">
+                                {% for suggestion in data.suggestions %}
+                                    <li class="suggestion-item mb-3">
+                                        <i class="fas fa-arrow-right text-warning me-2"></i>
+                                        <span>{{ suggestion }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                Your resume looks great! No immediate optimizations needed.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Auto-focus on first input when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add print styles
+        const printStyles = `
+            @media print {
+                .optimization-panel { display: none !important; }
+                .col-lg-8 { width: 100% !important; }
+                .resume-container { box-shadow: none !important; }
+                .resume-paper { border: none !important; }
+                body { font-size: 12pt; }
+                .section-title { color: #000 !important; }
+            }
+        `;
+        
+        const style = document.createElement('style');
+        style.textContent = printStyles;
+        document.head.appendChild(style);
+    });
+</script>
+{% endblock %}
