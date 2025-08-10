@@ -35,19 +35,18 @@ function initializeFormValidation() {
         });
     });
     
-    // Form submit validation
+    // Simple form submission - no interference
     form.addEventListener('submit', function(e) {
         console.log('Form submission started');
-        console.log('Form data:', new FormData(form));
         
-        if (!validateForm()) {
-            console.log('Form validation failed');
-            e.preventDefault();
-            showValidationErrors();
-        } else {
-            console.log('Form validation passed, showing loading state');
-            showLoadingState();
+        // Just show loading state without disabling anything
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.innerHTML = '<i class="fas fa-cog fa-spin me-2"></i>Generating Resume...';
         }
+        
+        // Let the form submit naturally - no validation interference
+        console.log('Form submitting normally...');
     });
 }
 
@@ -189,11 +188,8 @@ function showLoadingState() {
         submitBtn.innerHTML = '<i class="fas fa-cog fa-spin me-2"></i>Generating Resume...';
         loadingSpinner.classList.remove('d-none');
         
-        // Disable form inputs
-        const inputs = document.querySelectorAll('textarea');
-        inputs.forEach(input => {
-            input.disabled = true;
-        });
+        // DO NOT disable form inputs during submission - this prevents data from being sent
+        console.log('Loading state activated, form will submit normally');
     }
 }
 
